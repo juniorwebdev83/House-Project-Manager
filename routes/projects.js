@@ -4,32 +4,38 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const Project = require('../models/Project');
 
-// Add a new project
+// @route   POST api/projects
+// @desc    Create a new project
+// @access  Private
 router.post('/', auth, async (req, res) => {
-  const { house, startDate, endDate, budget, status, notes } = req.body;
+  const { house, startDate, endDate, budget } = req.body;
+
   try {
     const newProject = new Project({
       house,
       startDate,
       endDate,
-      budget,
-      status,
-      notes,
+      budget
     });
+
     const project = await newProject.save();
     res.json(project);
   } catch (err) {
-    res.status(500).send('Server error');
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 });
 
-// Get all projects
-router.get('/', auth, async (req, res) => {
+// @route   GET api/projects
+// @desc    Get all projects for a house
+// @access  Private
+router.get('/:houseId', auth, async (req, res) => {
   try {
-    const projects = await Project.find();
+    const projects = await Project.find({ house: req.params.houseId });
     res.json(projects);
   } catch (err) {
-    res.status(500).send('Server error');
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 });
 

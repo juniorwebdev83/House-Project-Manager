@@ -2,12 +2,27 @@
 const mongoose = require('mongoose');
 
 const HouseSchema = new mongoose.Schema({
-  address: { type: String, required: true },
-  contactInfo: { type: String, required: true },
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  progress: { type: String, default: 'Not Started' },
-  photos: { type: [String], default: [] },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  address: {
+    type: String,
+    required: true
+  },
+  contactInfo: {
+    type: String,
+    required: true
+  },
+  progress: {
+    type: String,
+    default: 'Not started'
+  },
+  date: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-const House = mongoose.model('House', HouseSchema);
-module.exports = House;
+module.exports = mongoose.model('House', HouseSchema);

@@ -4,29 +4,37 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const House = require('../models/House');
 
-// Register a new house
+// @route   POST api/houses
+// @desc    Register a new house
+// @access  Private
 router.post('/', auth, async (req, res) => {
   const { address, contactInfo } = req.body;
+
   try {
     const newHouse = new House({
-      address,
-      contactInfo,
       owner: req.user.id,
+      address,
+      contactInfo
     });
+
     const house = await newHouse.save();
     res.json(house);
   } catch (err) {
-    res.status(500).send('Server error');
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 });
 
-// Get all houses for the logged-in user
+// @route   GET api/houses
+// @desc    Get all houses for logged in user
+// @access  Private
 router.get('/', auth, async (req, res) => {
   try {
     const houses = await House.find({ owner: req.user.id });
     res.json(houses);
   } catch (err) {
-    res.status(500).send('Server error');
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 });
 
